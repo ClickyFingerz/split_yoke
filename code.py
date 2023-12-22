@@ -17,41 +17,28 @@ from kmk.modules.split import Split, SplitSide, SplitType
 from kmk.modules.tapdance import TapDance
 from kmk.scanners import DiodeOrientation
 
-
+#
 ### KEYBOARD ###
 keyboard = KMKKeyboard()
 keyboard.diode_orientation = DiodeOrientation.COL2ROW
+keyboard.col_pins = (board.GP14, board.GP13, board.GP12, board.GP11, board.GP10, board.GP9)
+keyboard.row_pins = (board.GP4, board.GP5, board.GP6, board.GP7, board.GP8)
 
-"""
-# LEFT SIDE
-keyboard.col_pins = (board.GP14, board.GP13, board.GP12, board.GP11, board.GP10, board.GP9)
-keyboard.row_pins = (board.GP4, board.GP5, board.GP6, board.GP7, board.GP8)
+# Comment one of these for each side
+split_side = SplitSide.LEFT
+#split_side = SplitSide.RIGHT
+
+uart_flip = False if split_side == SplitSide.LEFT else True
+
 split = Split(
-    split_flip=False,  # If both halves are the same, but flipped, set this True
-    split_side=SplitSide.LEFT,  # Sets if this is to SplitSide.LEFT or SplitSide.RIGHT, or use EE hands
-    split_type=SplitType.UART,  # Defaults to UART
-    split_target_left=True,  # Assumes that left will be the one on USB. Set to False if it will be the right
-    uart_interval=20,  # Sets the uarts delay. Lower numbers draw more power
-    data_pin=board.GP0,  # The primary data pin to talk to the secondary device with
-    data_pin2=board.GP1,  # Second uart pin to allow 2 way communication
-    uart_flip=False,  # Reverses the RX and TX pins if both are provided
-    use_pio=True,  # Use RP2040 PIO implementation of UART. Required if you want to use other pins than RX/TX
-)
-"""
-# RIGHT SIDE
-keyboard.col_pins = (board.GP14, board.GP13, board.GP12, board.GP11, board.GP10, board.GP9)
-keyboard.row_pins = (board.GP4, board.GP5, board.GP6, board.GP7, board.GP8)
-split = Split(
-    split_flip=False,  # If both halves are the same, but flipped, set this True
-    split_side=SplitSide.RIGHT,  # Sets if this is to SplitSide.LEFT or SplitSide.RIGHT, or use EE hands
-    split_type=SplitType.UART,  # Defaults to UART
-    # Switch to False to test right side pins
-    split_target_left=True,  # Assumes that left will be the one on USB. Set to False if it will be the right
-    uart_interval=20,  # Sets the uarts delay. Lower numbers draw more power
-    data_pin=board.GP0,  # The primary data pin to talk to the secondary device with
-    data_pin2=board.GP1,  # Second uart pin to allow 2 way communication
-    uart_flip=False,  # Reverses the RX and TX pins if both are provided
-    use_pio=True,  # Use RP2040 PIO implementation of UART. Required if you want to use other pins than RX/TX
+    #split_side=split_side,  # Sets if this is to SplitSide.LEFT or SplitSide.RIGHT, or use EE hands
+    split_type = SplitType.UART,  # Defaults to UART
+    split_target_left = True,  # Assumes that left will be the one on USB. Set to False if it will be the right
+    #uart_interval=20,  # Sets the uarts delay. Lower numbers draw more power
+    data_pin = board.GP1,
+    data_pin2 = board.GP0,
+    uart_flip = uart_flip,  # Reverses the RX and TX pins if both are provided -- works with LEFT=True RIGHT=False
+    use_pio = True,  # Use RP2040 PIO implementation of UART. Required if you want to use other pins than RX/TX
 )
 
 keyboard.debug_enabled = True
